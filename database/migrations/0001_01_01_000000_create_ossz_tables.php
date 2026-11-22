@@ -62,6 +62,7 @@ return new class extends Migration
             $table->string('name_fr')->default('');
             $table->text('description_fr')->nullable();
             $table->string('season_fr')->default('');
+            $table->integer('sort_order')->default(0);
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_published')->default(true);
             $table->timestamp('created_at')->nullable();
