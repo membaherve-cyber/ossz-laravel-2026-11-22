@@ -8,6 +8,9 @@ class User extends Authenticatable
 {
     protected $table = 'users';
 
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'email', 'username', 'phone', 'full_name', 'password_hash', 'role',
     ];
