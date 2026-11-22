@@ -14,10 +14,9 @@ final class Auth
 
     public static function hashPassword(string $password): string
     {
-        $salt = bin2hex(random_bytes(16));
-        $derived = hash('scrypt', $password, $salt, 64);
-
-        return $salt.':'.$derived;
+        // bcrypt via password_hash; verifyPassword() accepts both this and the
+        // legacy "salt:hex" scheme, so existing rows keep working.
+        return password_hash($password, PASSWORD_BCRYPT);
     }
 
     /** Verify against "salt:hex" scrypt hashes (and bcrypt for Laravel seeds). */
