@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductImage extends Model
 {
+
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = ['product_id', 'url', 'alt_text', 'sort_order'];
 
     public function product()

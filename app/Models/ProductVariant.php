@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductVariant extends Model
 {
+
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'product_id', 'size', 'colour', 'sku', 'price_override',
         'stock_qty', 'low_stock_threshold',

@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
+
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'name', 'name_fr', 'slug', 'parent_id', 'sort_order',
     ];

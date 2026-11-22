@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model
 {
+
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'order_id', 'variant_id', 'product_name', 'product_slug', 'variant_label',
         'image_url', 'quantity', 'unit_price',

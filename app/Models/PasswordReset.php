@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class PasswordReset extends Model
 {
+
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = ['user_id', 'token', 'expires_at', 'used_at'];
 
     protected $casts = ['expires_at' => 'datetime', 'used_at' => 'datetime'];

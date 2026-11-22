@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'name', 'slug', 'description', 'details', 'care_instructions',
         'name_fr', 'description_fr', 'details_fr', 'care_instructions_fr',

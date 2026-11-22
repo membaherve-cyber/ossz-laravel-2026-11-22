@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class HomeBlock extends Model
 {
+
+    // Schema has created_at only.
+    public const UPDATED_AT = null;
+
     protected $fillable = [
         'type', 'eyebrow', 'heading', 'body', 'image_url', 'cta_label',
         'eyebrow_fr', 'heading_fr', 'body_fr', 'cta_label_fr', 'cta_href',
