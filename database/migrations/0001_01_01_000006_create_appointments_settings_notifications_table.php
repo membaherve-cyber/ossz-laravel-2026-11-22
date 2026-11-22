@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('appointments', function (Blueprint $table) {
+        if (!Schema::hasTable('appointments')) Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('customer_name');
@@ -24,13 +24,13 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('settings', function (Blueprint $table) {
+        if (!Schema::hasTable('settings')) Schema::create('settings', function (Blueprint $table) {
             $table->string('key')->primary();
             $table->longText('value')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('notifications', function (Blueprint $table) {
+        if (!Schema::hasTable('notifications')) Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->string('type');
             $table->text('content');
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('pages', function (Blueprint $table) {
+        if (!Schema::hasTable('pages')) Schema::create('pages', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
