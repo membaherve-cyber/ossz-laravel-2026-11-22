@@ -8,6 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Idempotent: the combined create_all_tables migration may already have created these.
+        if (Schema::hasTable('jobs')) {
+            return;
+        }
+        if (Schema::hasTable('failed_jobs')) {
+            return;
+        }
+
         Schema::create('jobs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('queue')->index();

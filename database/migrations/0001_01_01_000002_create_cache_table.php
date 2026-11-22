@@ -8,6 +8,14 @@ return new class extends Migration
 {
     public function up(): void
     {
+        // Idempotent: the combined create_all_tables migration may already have created these.
+        if (Schema::hasTable('cache')) {
+            return;
+        }
+        if (Schema::hasTable('cache_locks')) {
+            return;
+        }
+
         Schema::create('cache', function (Blueprint $table) {
             $table->string('key')->primary();
             $table->mediumText('value');
