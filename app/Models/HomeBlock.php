@@ -8,6 +8,7 @@ class HomeBlock extends Model
 {
 
     // Schema has created_at only.
+    public const CREATED_AT = null;
     public const UPDATED_AT = null;
 
     protected $fillable = [
