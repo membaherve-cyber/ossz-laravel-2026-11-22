@@ -38,7 +38,9 @@ final class I18n
 
     public static function t(string $key, array $vars = []): string
     {
-        $value = self::lines()[$key] ?? null;
+        $loc = self::locale();
+        $dict = self::lines();
+        $value = $dict[$loc][$key] ?? ($dict['en'][$key] ?? null);
         if ($value === null) {
             return $key;
         }

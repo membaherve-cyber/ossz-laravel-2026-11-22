@@ -45,7 +45,7 @@
             <div class="card" style="padding:1.5rem">
                 <p class="eyebrow">{{ t('contact.wa') }}</p>
                 <p style="margin-top:.6rem">
-                    <a class="link-underline" target="_blank" rel="noreferrer" href="{{ \App\Support\wa_link($settings['whatsapp_number']) }}">{{ $settings['whatsapp_number'] }}</a>
+                    <a class="link-underline" target="_blank" rel="noreferrer" href="{{ wa_link($settings['whatsapp_number']) }}">{{ $settings['whatsapp_number'] }}</a>
                 </p>
             </div>
         </aside>

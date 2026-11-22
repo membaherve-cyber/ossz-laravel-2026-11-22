@@ -50,6 +50,34 @@ class StaffController extends Controller
         return back()->with('success', "Account for {$user->email} created.");
     }
 
+    public function update(Request $request, User $user)
+    {
+        $this->guard();
+        $data = $request->validate([
+            'email' => 'required|email|max:160|unique:users,email,' . $user->id,
+            'fullName' => 'required|string|max:120',
+            'role' => 'required|in:uploader,staff,admin',
+            'password' => 'nullable|min:6|max:120',
+        ]);
+        $updates = [
+            'email' => strtolower($data['email']),
+            'full_name' => $data['fullName'],
+            'role' => $data['role'],
+        ];
+        if (!empty($data['password'])) {
+            $updates['password_hash'] = Auth::hashPassword($data['password']);
+        }
+        $user->update($updates);
+        AuditLog::create([
+            'actor_id' => request()->attributes->get('ossz_user')->id,
+            'actor_email' => request()->attributes->get('ossz_user')->email,
+            'action' => 'staff.update',
+            'detail' => "Updated staff profile for {$user->email}",
+        ]);
+
+        return back()->with('success', "Staff account for {$user->email} updated.");
+    }
+
     public function updateRole(Request $request)
     {
         $this->guard();

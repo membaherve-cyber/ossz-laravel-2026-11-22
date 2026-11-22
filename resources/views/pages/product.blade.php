@@ -87,7 +87,7 @@
                 <p style="font-size:.85rem;color:var(--ink-soft)">{{ t('pdp.deliveryReturnsBody') }}</p>
                 <p style="margin-top:.8rem">
                     <a class="link-underline" style="font-size:.85rem" target="_blank" rel="noreferrer"
-                       href="{{ \App\Support\wa_link(\App\Support\Settings::get('whatsapp_number'), ($p->name).' — ') }}">
+                       href="{{ wa_link(\App\Support\Settings::get('whatsapp_number'), ($p->name).' — ') }}">
                         {{ t('pdp.askWa') }}
                     </a>
                 </p>
@@ -109,6 +109,26 @@
     @push('styles')
         <style>
             .chip[disabled] { opacity: .4; text-decoration: line-through; cursor: not-allowed; }
+            .variant-picker .chip { cursor: pointer; }
         </style>
+    @endpush
+
+    @push('scripts')
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var picker = document.getElementById('variant-picker');
+            var input  = document.getElementById('variant-input');
+            if (!picker || !input) return;
+            var chips = picker.querySelectorAll('button[data-variant]');
+            chips.forEach(function(chip) {
+                chip.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    chips.forEach(function(c) { c.classList.remove('chip-active'); });
+                    chip.classList.add('chip-active');
+                    input.value = chip.getAttribute('data-variant');
+                });
+            });
+        });
+        </script>
     @endpush
 @endsection

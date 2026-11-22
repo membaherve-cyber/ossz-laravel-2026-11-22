@@ -44,6 +44,21 @@ class ProductController extends Controller
         $data['slug'] = $this->uniqueSlug($data['slug'] ?: $data['name']);
         $product = Product::create($data);
 
+        if ($request->hasFile('file')) {
+            $result = \App\Support\ImageKit::upload($request->file('file'), 'products');
+            $product->images()->create([
+                'url'        => $result['url'],
+                'alt_text'   => $product->name,
+                'sort_order' => 1,
+            ]);
+        } elseif ($request->filled('initial_photo')) {
+            $product->images()->create([
+                'url'        => $request->input('initial_photo'),
+                'alt_text'   => $product->name,
+                'sort_order' => 1,
+            ]);
+        }
+
         return redirect()->route('admin.products.edit', $product)->with('success', 'Product created.');
     }
 
@@ -100,11 +115,26 @@ class ProductController extends Controller
     public function addImage(Request $request, Product $product)
     {
         $this->guard('catalogue');
-        $request->validate(['url' => 'required|string|max:500', 'alt_text' => 'nullable|string|max:200']);
         $max = (int) $product->images()->max('sort_order');
+
+        if ($request->hasFile('file')) {
+            $request->validate([
+                'file'     => 'required|image|max:10240',
+                'alt_text' => 'nullable|string|max:200',
+            ]);
+            $result = \App\Support\ImageKit::upload($request->file('file'), 'products');
+            $url = $result['url'];
+        } else {
+            $request->validate([
+                'url'      => 'required|string|max:500',
+                'alt_text' => 'nullable|string|max:200',
+            ]);
+            $url = $request->input('url');
+        }
+
         $product->images()->create([
-            'url' => $request->input('url'),
-            'alt_text' => (string) $request->input('alt_text', ''),
+            'url'        => $url,
+            'alt_text'   => (string) $request->input('alt_text', ''),
             'sort_order' => $max + 1,
         ]);
 
@@ -139,6 +169,10 @@ class ProductController extends Controller
             'description' => 'nullable|string|max:2000',
             'cover_image' => 'nullable|string|max:400',
         ]);
+        if ($request->hasFile('file')) {
+            $result = \App\Support\ImageKit::upload($request->file('file'), 'collections');
+            $data['cover_image'] = $result['url'];
+        }
         $data['slug'] = $this->uniqueSlug($data['name']);
         Collection::create($data);
 

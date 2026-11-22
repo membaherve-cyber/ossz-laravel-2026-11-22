@@ -19,25 +19,43 @@ final class Notify
 {
     public static function email(string $to, string $subject, string $body, ?int $orderId = null, ?int $appointmentId = null): void
     {
+        // 1. Prioritize SMTP (Namecheap Stellar Plus cPanel mail)
+        if (env('MAIL_HOST') || env('SMTP_HOST')) {
+            try {
+                \Illuminate\Support\Facades\Mail::raw($body, function ($msg) use ($to, $subject) {
+                    $msg->to($to)->subject($subject);
+                    $fromAddress = env('MAIL_FROM_ADDRESS') ?: env('SMTP_FROM', 'concierge@osszcollections.cm');
+                    $fromName = env('MAIL_FROM_NAME', 'OSSZ Collections');
+                    $msg->from($fromAddress, $fromName);
+                });
+                self::record($orderId, $appointmentId, 'email', $to, $subject, $body, 'sent', '');
+                return;
+            } catch (\Throwable $e) {
+                \Log::warning('SMTP send failed, checking Resend fallback: ' . $e->getMessage());
+            }
+        }
+
+        // 2. Resend API Fallback
         $key = env('RESEND_API_KEY');
-        if (! $key) {
-            self::record($orderId, $appointmentId, 'email', $to, $subject, $body, 'queued');
-
-            return;
+        if ($key) {
+            try {
+                $res = \Http::withToken($key)->timeout(8)
+                    ->post('https://api.resend.com/emails', [
+                        'from' => env('RESEND_FROM', 'OSSZ Collections <hello@osszcollections.cm>'),
+                        'to' => [$to],
+                        'subject' => $subject,
+                        'text' => $body,
+                    ]);
+                self::record($orderId, $appointmentId, 'email', $to, $subject, $body, $res->successful() ? 'sent' : 'failed', $res->successful() ? '' : 'HTTP '.$res->status());
+                return;
+            } catch (\Throwable $e) {
+                self::record($orderId, $appointmentId, 'email', $to, $subject, $body, 'failed', substr($e->getMessage(), 0, 200));
+                return;
+            }
         }
 
-        try {
-            $res = \Http::withToken($key)->timeout(8)
-                ->post('https://api.resend.com/emails', [
-                    'from' => env('RESEND_FROM', 'OSSZ Collections <hello@osszcollections.cm>'),
-                    'to' => [$to],
-                    'subject' => $subject,
-                    'text' => $body,
-                ]);
-            self::record($orderId, $appointmentId, 'email', $to, $subject, $body, $res->successful() ? 'sent' : 'failed', $res->successful() ? '' : 'HTTP '.$res->status());
-        } catch (\Throwable $e) {
-            self::record($orderId, $appointmentId, 'email', $to, $subject, $body, 'failed', substr($e->getMessage(), 0, 200));
-        }
+        // 3. Queue for manual dispatch
+        self::record($orderId, $appointmentId, 'email', $to, $subject, $body, 'queued');
     }
 
     /** Queue the WhatsApp copy for staff to send via the wa.me deep link. */

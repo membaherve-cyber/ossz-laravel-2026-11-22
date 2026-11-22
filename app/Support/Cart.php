@@ -2,7 +2,7 @@
 
 namespace App\Support;
 
-use App\Models\Cart;
+use App\Models\Cart as CartModel;
 use App\Models\CartItem;
 use App\Models\Coupon;
 use App\Models\ProductImage;
@@ -28,7 +28,7 @@ final class Cart
             return ['id' => null, 'lines' => [], 'subtotal' => 0, 'itemCount' => 0, 'couponCode' => null, 'discount' => 0];
         }
 
-        $cart = Cart::find($cartId);
+        $cart = CartModel::find($cartId);
         if (! $cart) {
             Session::forget(self::SESSION_KEY);
 
@@ -77,8 +77,9 @@ final class Cart
         }
         $couponCode = $cart->coupon_code;
         $discount = $couponCode ? self::computeDiscount($couponCode, $subtotal) : 0;
+        $id = $cart->id;
 
-        return compact('cart', 'lines', 'subtotal', 'itemCount', 'couponCode', 'discount');
+        return compact('id', 'cart', 'lines', 'subtotal', 'itemCount', 'couponCode', 'discount');
     }
 
     /** Current cart id or null — creates nothing. */
@@ -86,7 +87,7 @@ final class Cart
     {
         $userId = session('user_id');
         if ($userId) {
-            $cart = Cart::where('user_id', $userId)->first();
+            $cart = CartModel::where('user_id', $userId)->first();
             return $cart?->id;
         }
 
@@ -98,17 +99,17 @@ final class Cart
     {
         $userId = session('user_id');
         if ($userId) {
-            $cart = Cart::firstOrCreate(['user_id' => $userId]);
+            $cart = CartModel::firstOrCreate(['user_id' => $userId]);
             return $cart->id;
         }
         $cartId = Session::get(self::SESSION_KEY);
         if ($cartId) {
-            $cart = Cart::find($cartId);
+            $cart = CartModel::find($cartId);
             if ($cart) {
                 return $cart->id;
             }
         }
-        $cart = Cart::create(['session_id' => Session::getId()]);
+        $cart = CartModel::create(['session_id' => Session::getId()]);
         Session::put(self::SESSION_KEY, $cart->id);
 
         return $cart->id;
@@ -150,7 +151,7 @@ final class Cart
         $cartId = self::getOrCreateId();
         $code = strtoupper(trim($code));
         if ($code === '') {
-            Cart::where('id', $cartId)->update(['coupon_code' => null]);
+            CartModel::where('id', $cartId)->update(['coupon_code' => null]);
             return true;
         }
         $coupon = Coupon::where('code', $code)->where('is_active', true)->first();
@@ -160,7 +161,7 @@ final class Cart
         if ($coupon->expires_at && $coupon->expires_at->isPast()) {
             return false;
         }
-        Cart::where('id', $cartId)->update(['coupon_code' => $code]);
+        CartModel::where('id', $cartId)->update(['coupon_code' => $code]);
 
         return true;
     }
@@ -194,12 +195,12 @@ final class Cart
         if (! $guestCartId) {
             return;
         }
-        $guestCart = Cart::find($guestCartId);
+        $guestCart = CartModel::find($guestCartId);
         Session::forget(self::SESSION_KEY);
         if (! $guestCart) {
             return;
         }
-        $userCart = Cart::where('user_id', $userId)->first();
+        $userCart = CartModel::where('user_id', $userId)->first();
         if (! $userCart) {
             $guestCart->user_id = $userId;
             $guestCart->session_id = null;

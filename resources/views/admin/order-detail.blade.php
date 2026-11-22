@@ -79,7 +79,7 @@
                     <a class="btn btn-secondary btn-sm" href="{{ route('admin.orders.packing-slip', $order) }}" target="_blank">{{ is_fr() ? 'Bordereau' : 'Packing slip' }} ↗</a>
                     @if ($order->guest_phone)
                         <a class="btn btn-secondary btn-sm" target="_blank" rel="noreferrer"
-                           href="{{ \App\Support\wa_link($order->guest_phone, 'OSSZ Collections — order '.$order->order_number) }}">
+                           href="{{ wa_link($order->guest_phone, 'OSSZ Collections — order '.$order->order_number) }}">
                             WhatsApp {{ $order->guest_phone }} ↗
                         </a>
                     @endif

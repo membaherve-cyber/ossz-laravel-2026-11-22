@@ -18,7 +18,7 @@ class CheckoutController extends Controller
     public function show()
     {
         $cart = Cart::view();
-        if (! $cart['id'] || count($cart['lines']) === 0) {
+        if (! ($cart['id'] ?? null) || count($cart['lines']) === 0) {
             return redirect()->route('cart.show')->with('error', 'Your cart is empty.');
         }
 
@@ -31,7 +31,7 @@ class CheckoutController extends Controller
     public function placeOrder(Request $request)
     {
         $cart = Cart::view();
-        if (! $cart['id'] || count($cart['lines']) === 0) {
+        if (! ($cart['id'] ?? null) || count($cart['lines']) === 0) {
             return back()->with('error', 'Your cart is empty.');
         }
 

@@ -35,9 +35,12 @@ Route::get('/appointments', [PageController::class, 'appointments'])->name('appo
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/size-guide', [PageController::class, 'sizeGuide'])->name('size-guide');
 Route::get('/offline', [PageController::class, 'offline'])->name('offline');
+Route::redirect('/delivery-returns', '/faq');
+Route::redirect('/privacy', '/about');
+Route::redirect('/terms', '/about');
 
 // ── Locale switch ───────────────────────────────────────────────────
-Route::post('/locale', [PageController::class, 'switchLocale'])->name('locale.switch');
+Route::match(['get', 'post'], '/locale/{locale?}', [PageController::class, 'switchLocale'])->name('locale.switch');
 
 // ── Public form actions ─────────────────────────────────────────────
 Route::post('/newsletter', [PageController::class, 'newsletter'])->name('newsletter');
@@ -144,6 +147,7 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::get('/customers', [Admin\CustomerController::class, 'index'])->name('customers');
     Route::get('/staff', [Admin\StaffController::class, 'index'])->name('staff');
     Route::post('/staff', [Admin\StaffController::class, 'store'])->name('staff.store');
+    Route::post('/staff/{user}', [Admin\StaffController::class, 'update'])->name('staff.update');
     Route::post('/staff/role', [Admin\StaffController::class, 'updateRole'])->name('staff.role');
     Route::get('/contact', [Admin\ContactController::class, 'index'])->name('contact');
     Route::post('/contact/reply', [Admin\ContactController::class, 'reply'])->name('contact.reply');
@@ -153,7 +157,10 @@ Route::middleware('auth.admin')->prefix('admin')->name('admin.')->group(function
     Route::post('/coupons/toggle', [Admin\CouponController::class, 'toggle'])->name('coupons.toggle');
     Route::get('/media', [Admin\MediaController::class, 'index'])->name('media');
     Route::post('/media', [Admin\MediaController::class, 'upload'])->name('media.upload');
+    Route::post('/api/upload-image', [Admin\MediaController::class, 'apiUpload'])->name('api.upload');
+    Route::post('/upload-image', [Admin\MediaController::class, 'apiUpload']);
     Route::get('/notifications', [Admin\NotificationController::class, 'index'])->name('notifications');
+    Route::post('/notifications/{notification}/delete', [Admin\NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::get('/ai-gaps', [Admin\AiGapController::class, 'index'])->name('ai-gaps');
     Route::post('/ai-gaps', [Admin\AiGapController::class, 'resolve'])->name('ai-gaps.resolve');
     Route::get('/settings', [Admin\SettingsController::class, 'index'])->name('settings');

@@ -55,13 +55,23 @@ class PageController extends Controller
         $filters = $request->only(['category', 'collection', 'size', 'colour', 'min', 'max', 'availability', 'sort', 'q']);
         if ($request->filled('min')) $filters['minPrice'] = (int) $request->input('min');
         if ($request->filled('max')) $filters['maxPrice'] = (int) $request->input('max');
-        $products = ProductQuery::list($filters);
+        $allProducts = ProductQuery::list($filters);
+
+        // Server-side pagination (9 per page)
+        $perPage    = 9;
+        $pageNo     = max(1, (int) $request->input('page', 1));
+        $total      = count($allProducts);
+        $totalPages = max(1, (int) ceil($total / $perPage));
+        $pageNo     = min($pageNo, $totalPages);
+        $products   = array_slice($allProducts, ($pageNo - 1) * $perPage, $perPage);
 
         return view('pages.shop', [
-            'products' => $products,
-            'facets' => ProductQuery::facets(),
-            'total' => count($products),
-            'query' => $request->input('q', ''),
+            'products'   => $products,
+            'facets'     => ProductQuery::facets(),
+            'total'      => $total,
+            'totalPages' => $totalPages,
+            'pageNo'     => $pageNo,
+            'query'      => $request->input('q', ''),
         ]);
     }
 
@@ -268,10 +278,10 @@ class PageController extends Controller
         ]);
     }
 
-    public function switchLocale(Request $request)
+    public function switchLocale(Request $request, ?string $locale = null)
     {
-        $locale = $request->input('locale') === 'fr' ? 'fr' : 'en';
-        cookie()->queue(\App\Support\I18n::COOKIE, $locale, 60 * 24 * 365);
+        $target = ($locale ?: $request->input('locale')) === 'fr' ? 'fr' : 'en';
+        cookie()->queue(\App\Support\I18n::COOKIE, $target, 60 * 24 * 365);
 
         return back();
     }

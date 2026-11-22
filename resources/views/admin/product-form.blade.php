@@ -4,6 +4,7 @@
 
 @section('content')
     <form method="POST" action="{{ $product->exists ? route('admin.products.update', $product) : route('admin.products.store') }}"
+          enctype="multipart/form-data"
           style="display:grid;gap:1.2rem;max-width:820px">
         @csrf
 
@@ -89,6 +90,16 @@
                     {{ is_fr() ? 'Vedette' : 'Featured' }}
                 </label>
             </div>
+            @if (! $product->exists)
+                <div style="margin-top:1.2rem;border-top:1px solid var(--line);padding-top:1rem">
+                    @include('admin.partials.image-upload', [
+                        'name'     => 'initial_photo',
+                        'folder'   => 'products',
+                        'label'    => is_fr() ? 'Photo de couverture (ImageKit)' : 'Primary Product Photo (ImageKit)',
+                        'helpText' => 'Select product cover photo from computer. It will upload directly to ImageKit.'
+                    ])
+                </div>
+            @endif
         </div>
 
         <div style="display:flex;gap:.8rem">
@@ -132,27 +143,48 @@
             </div>
 
             <div class="card" style="padding:1.5rem">
-                <h3 style="font-size:.95rem;font-weight:400">{{ is_fr() ? 'Images' : 'Images' }}</h3>
-                <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.8rem">
-                    @forelse ($product->images as $img)
-                        <div style="position:relative;width:90px">
-                            <div class="photo-frame" style="aspect-ratio:1"><img src="{{ $img->url }}" alt="{{ $img->alt_text }}"></div>
-                            <form method="POST" action="{{ route('admin.products.images.delete', $img) }}" style="position:absolute;top:2px;right:2px">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem">
+                    <h3 style="font-size:.95rem;font-weight:500">{{ is_fr() ? 'Galerie photos & ImageKit' : 'Product Gallery (ImageKit)' }}</h3>
+                    <span style="font-size:.75rem;color:var(--muted)">{{ $product->images->count() }} {{ is_fr() ? 'photos' : 'photos' }}</span>
+                </div>
+
+                {{-- Image gallery grid --}}
+                <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(100px, 1fr));gap:.75rem;margin-top:.8rem">
+                    @forelse ($product->images as $index => $img)
+                        <div style="position:relative;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:var(--canvas);box-shadow:0 1px 2px rgba(0,0,0,0.04)">
+                            <div class="photo-frame" style="aspect-ratio:1">
+                                <img src="{{ $img->url }}" alt="{{ $img->alt_text }}" style="width:100%;height:100%;object-fit:cover">
+                            </div>
+                            @if ($index === 0)
+                                <span style="position:absolute;bottom:4px;left:4px;background:var(--accent);color:#fff;font-size:.6rem;padding:.15rem .4rem;border-radius:4px;font-weight:600;letter-spacing:.05em">
+                                    COVER
+                                </span>
+                            @endif
+                            <form method="POST" action="{{ route('admin.products.images.delete', $img) }}" style="position:absolute;top:4px;right:4px">
                                 @csrf
-                                <button class="btn btn-sm" style="background:#1b1917;color:#fff;padding:.15rem .4rem" type="submit">✕</button>
+                                <button class="btn btn-sm" style="background:rgba(0,0,0,0.7);color:#fff;border-radius:6px;padding:.15rem .45rem;font-size:.7rem" type="submit" onclick="return confirm('Remove photo?')">✕</button>
                             </form>
                         </div>
                     @empty
-                        <p style="font-size:.8rem;color:var(--muted)">{{ is_fr() ? 'Aucune image.' : 'No images.' }}</p>
+                        <p style="font-size:.8rem;color:var(--muted);grid-column:1/-1">{{ is_fr() ? 'Aucune image pour cette pièce.' : 'No images uploaded yet.' }}</p>
                     @endforelse
                 </div>
 
-                <form method="POST" action="{{ route('admin.products.images.add', $product) }}" class="form-grid" style="margin-top:1rem">
-                    @csrf
-                    <input class="field" name="url" placeholder="/catalogue/piece.webp or https://…" required>
-                    <input class="field" name="alt_text" placeholder="alt text">
-                    <button class="btn btn-secondary btn-sm" type="submit">+ {{ is_fr() ? 'Image' : 'Image' }}</button>
-                </form>
+                {{-- Direct upload form --}}
+                <div style="margin-top:1.2rem;border-top:1px solid var(--line);padding-top:1rem">
+                    <label class="label" style="font-size:.82rem;font-weight:500">+ {{ is_fr() ? 'Téléverser une image (ordinateur → ImageKit)' : 'Upload photo from computer to ImageKit' }}</label>
+                    <form method="POST" action="{{ route('admin.products.images.add', $product) }}" enctype="multipart/form-data" class="form-grid" style="margin-top:.5rem">
+                        @csrf
+                        <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+                            <input class="field" type="file" name="file" accept="image/*" style="flex:1;min-width:200px">
+                            <input class="field" name="alt_text" placeholder="Alt text / description" style="flex:1;min-width:160px">
+                            <button class="btn btn-primary btn-sm" type="submit" style="white-space:nowrap">+ {{ is_fr() ? 'Téléverser' : 'Upload photo' }}</button>
+                        </div>
+                        <div style="margin-top:.5rem">
+                            <input class="field" name="url" placeholder="{{ is_fr() ? 'ou coller une URL directe (https://…)' : 'or paste direct image URL (https://…)' }}" style="font-size:.78rem;padding:.4rem .6rem">
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     @endif

@@ -165,3 +165,6 @@ if (! function_exists('format_date_time')) {
         return $date->format('d M Y · H:i');
     }
 }
+
+require_once __DIR__ . '/wa_link.php';
+

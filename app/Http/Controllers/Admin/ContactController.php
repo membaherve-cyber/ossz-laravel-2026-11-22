@@ -22,15 +22,18 @@ class ContactController extends Controller
         $this->guard();
         $data = $request->validate([
             'messageId' => 'required|integer',
+            'subject' => 'nullable|string|max:200',
             'reply' => 'required|string|max:4000',
         ]);
         $message = ContactMessage::findOrFail((int) $data['messageId']);
         $message->update(['handled' => true]);
 
+        $subject = !empty($data['subject']) ? $data['subject'] : 'OSSZ Collections — regarding your message';
+
         if (str_contains($message->contact, '@')) {
             Notify::email(
                 $message->contact,
-                'OSSZ Collections — regarding your message',
+                $subject,
                 "Dear {$message->name},\n\nThank you for reaching out to OSSZ Collections.\n\n{$data['reply']}\n\nWith warm regards,\nOSSZ Collections\nAnge Raphael, Douala, Cameroon"
             );
         }

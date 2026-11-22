@@ -38,6 +38,10 @@ class ContentController extends Controller
             'sort_order' => 'nullable|integer',
         ]);
         $data['is_published'] = $request->boolean('is_published');
+        if ($request->hasFile('file')) {
+            $result = \App\Support\ImageKit::upload($request->file('file'), 'homepage-blocks');
+            $data['image_url'] = $result['url'];
+        }
         if (! empty($data['id'])) {
             HomeBlock::where('id', (int) $data['id'])->update($data);
         } else {
@@ -82,6 +86,10 @@ class ContentController extends Controller
             'status' => 'required|in:draft,published',
         ]);
         $data['slug'] = slugify($data['slug'] ?: $data['title']);
+        if ($request->hasFile('file')) {
+            $result = \App\Support\ImageKit::upload($request->file('file'), 'journal');
+            $data['cover_image'] = $result['url'];
+        }
         if (($data['status'] ?? '') === 'published') {
             $data['published_at'] = now();
         }
@@ -120,14 +128,22 @@ class ContentController extends Controller
             'title' => 'nullable|string|max:200',
             'caption' => 'nullable|string|max:600',
             'caption_fr' => 'nullable|string|max:600',
-            'image_url' => 'required|string|max:400',
-            'media_type' => 'required|in:image,video',
+            'image_url' => 'nullable|string|max:400',
+            'media_type' => 'nullable|in:image,video',
             'video_url' => 'nullable|string|max:400',
             'poster_url' => 'nullable|string|max:400',
             'duration_seconds' => 'nullable|integer',
             'product_slug' => 'nullable|string|max:220',
             'sort_order' => 'nullable|integer',
         ]);
+        if ($request->hasFile('file')) {
+            $result = \App\Support\ImageKit::upload($request->file('file'), 'lookbook');
+            $data['image_url'] = $result['url'];
+        }
+        $data['media_type'] = $data['media_type'] ?? 'image';
+        if (empty($data['image_url'])) {
+            $data['image_url'] = '/catalogue/editorial-hero.jpg';
+        }
         if (! empty($data['id'])) {
             LookbookItem::where('id', (int) $data['id'])->update($data);
         } else {
@@ -141,6 +157,7 @@ class ContentController extends Controller
     /** Video upload → storage/app/lookbook. */
     public function uploadLook(\Illuminate\Http\Request $request)
     {
+        set_time_limit(120); // Large video uploads can exceed the shared-hosting 30 s default
         $this->guard();
         $request->validate([
             'video' => 'required|file|mimetypes:video/mp4,video/webm,video/quicktime|max:102400',

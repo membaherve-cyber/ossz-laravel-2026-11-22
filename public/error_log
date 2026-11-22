@@ -1,0 +1,20 @@
+[22-Nov-2026 17:56:13 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/osszakze/public_html/public/_deploy_runner.php on line 199
+[22-Nov-2026 17:56:18 UTC] PHP Parse error:  syntax error, unexpected token "." in /home/osszakze/public_html/public/_deploy_runner.php on line 199
+[22-Nov-2026 18:57:15 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:16 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:17 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:18 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:18 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:19 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:20 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:21 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:23 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:25 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:37 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:57:45 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:58:05 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:58:07 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:58:10 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:58:21 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:58:25 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19
+[22-Nov-2026 18:58:45 Africa/Douala] PHP Fatal error:  Cannot declare class App\Support\Cart because the name is already in use in /home/osszakze/public_html/app/Support/Cart.php on line 19

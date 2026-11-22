@@ -26,7 +26,7 @@
 
         <p style="margin-top:1.5rem;font-size:.8rem;color:var(--muted)">
             {{ is_fr() ? 'Une question ? Écrivez-nous sur WhatsApp.' : 'A question? Message us on WhatsApp.' }}
-            <a class="link-underline" target="_blank" rel="noreferrer" href="{{ \App\Support\wa_link(\App\Support\Settings::get('whatsapp_number')) }}">
+            <a class="link-underline" target="_blank" rel="noreferrer" href="{{ wa_link(\App\Support\Settings::get('whatsapp_number')) }}">
                 {{ \App\Support\Settings::get('whatsapp_number') }}
             </a>
         </p>
