@@ -206,7 +206,8 @@ chmod -R 775 bootstrap/cache
 2. Visit: https://osszcollection.com/login
    - Login with:
      Email: admin@osszcollection.com
-     Password: password
+     Password: (the value you set as SEED_ADMIN_PASSWORD, or the
+               generated password printed by the seeder)
 
 3. Visit: https://osszcollection.com/admin
    - You should see the backoffice dashboard
@@ -244,5 +245,5 @@ Your OSSZ Collections website is now live at:
 Backoffice:
 🔐 https://osszcollection.com/admin
    Email: admin@osszcollection.com
-   Password: password
+   Password: (your SEED_ADMIN_PASSWORD)
 

@@ -31,21 +31,44 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // ── Staff logins ───────────────────────────────────────────────
-        $staff = [
-            ['email' => 'admin@osszcollection.com', 'username' => 'admin', 'full_name' => 'OSSZ Admin', 'role' => 'admin', 'password' => 'OsszAdmin2026!'],
-            ['email' => 'staff@osszcollection.com', 'username' => 'staff', 'full_name' => 'OSSZ Staff', 'role' => 'staff', 'password' => 'OsszStaff2026!'],
-            ['email' => 'uploader@osszcollection.com', 'username' => 'uploader', 'full_name' => 'OSSZ Uploader', 'role' => 'uploader', 'password' => 'OsszUpload2026!'],
-        ];
-        foreach ($staff as $s) {
+        // Passwords are read from the environment (SEED_MANAGEMENT_PASSWORD,
+        // SEED_ADMIN_PASSWORD, SEED_STAFF_PASSWORD) so real credentials are
+        // never committed to this (public) repository. When a variable is
+        // missing, a random password is generated and printed once by the
+        // seeder so it is not lost.
+        //
+        // Account scheme (matches the live back-office):
+        //   management@osszcollection.com  Aminata Sow     admin  (management, full access)
+        //   admin@osszcollection.com       David Nkeng     admin
+        //   info@osszcollection.com        OSSZ Collection staff  (orders & fulfilment)
+        echo "Staff accounts:\n";
+        foreach ([
+            ['email' => 'management@osszcollection.com', 'username' => 'management', 'full_name' => 'Aminata Sow', 'role' => 'admin', 'env' => 'SEED_MANAGEMENT_PASSWORD'],
+            ['email' => 'admin@osszcollection.com', 'username' => 'admin', 'full_name' => 'David Nkeng', 'role' => 'admin', 'env' => 'SEED_ADMIN_PASSWORD'],
+            ['email' => 'info@osszcollection.com', 'username' => 'staff', 'full_name' => 'OSSZ Collection', 'role' => 'staff', 'env' => 'SEED_STAFF_PASSWORD'],
+        ] as $s) {
+            $fromEnv = env($s['env']);
+            $generated = false;
+            if (is_string($fromEnv) && $fromEnv !== '') {
+                $password = $fromEnv;
+            } else {
+                $password = 'Ossz-' . bin2hex(random_bytes(6));
+                $generated = true;
+            }
             User::updateOrCreate(
                 ['email' => $s['email']],
                 [
                     'username' => $s['username'],
                     'full_name' => $s['full_name'],
                     'role' => $s['role'],
-                    'password_hash' => Auth::hashPassword($s['password']),
+                    'password_hash' => Auth::hashPassword($password),
                 ]
             );
+            echo '  ' . str_pad($s['role'], 10) . $s['email'] . '  password: '
+                . ($generated
+                    ? $password . "  (GENERATED — set {$s['env']} in .env to control it)"
+                    : "(set via {$s['env']})")
+                . "\n";
         }
 
         // ── Categories ─────────────────────────────────────────────────

@@ -51,7 +51,7 @@ php artisan db:seed
 ```
 
 This creates all tables and populates them with:
-- Staff accounts (admin@osszcollection.com, staff@osszcollection.com, uploader@osszcollection.com)
+- Staff accounts (management@osszcollection.com, admin@osszcollection.com, info@osszcollection.com — passwords from SEED_* env variables)
 - Categories and collections
 - Sample products
 - Delivery zones
@@ -98,13 +98,25 @@ php artisan route:cache
 php artisan view:cache
 ```
 
-## Default Staff Accounts
+## Staff Accounts
 
-| Email | Username | Password | Role |
-|-------|----------|----------|------|
-| admin@osszcollection.com | admin | OsszAdmin2026! | admin |
-| staff@osszcollection.com | staff | OsszStaff2026! | staff |
-| uploader@osszcollection.com | uploader | OsszUpload2026! | uploader |
+Seeded by `php artisan db:seed --force`. **Passwords are never hardcoded** — they
+are read from the environment; when a variable is missing, a random password is
+generated and printed once by the seeder:
+
+| Email | Role |
+|-------|------|
+| management@osszcollection.com | admin (management — full back-office) |
+| admin@osszcollection.com | admin |
+| info@osszcollection.com | staff (orders & fulfilment) |
+
+Set them before seeding in `.env`:
+
+```env
+SEED_MANAGEMENT_PASSWORD=...
+SEED_ADMIN_PASSWORD=...
+SEED_STAFF_PASSWORD=...
+```
 
 ## Optional Integrations
 

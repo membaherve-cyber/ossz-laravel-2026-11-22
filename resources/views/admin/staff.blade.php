@@ -43,7 +43,7 @@
                                     </div>
                                     <div>
                                         <div style="font-weight:500;color:var(--ink)">{{ $member->full_name ?: '—' }}</div>
-                                        @if($member->username)<div style="font-size:.7rem;color:var(--muted)">@{{ $member->username }}</div>@endif
+                                        @if($member->username)<div style="font-size:.7rem;color:var(--muted)">{{ $member->username }}</div>@endif
                                     </div>
                                 </div>
                             </td>
